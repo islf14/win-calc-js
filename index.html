@@ -9,48 +9,50 @@
 <body>
   <div class="container">
     <h2>Calculator</h2>
-    <div>
-      <input class="i-cal" id="cal" type="text">
+    <div class="container-cal">
+      <div class="container-stack">
+        <p class="stack" id="stack" for="cal"></p>
+      </div>
+      <input class="i-cal" id="entry" value="" autocomplete="off" type="text">
     </div>
-    <div>
-      <div class="row1">
-        <button id="ac">%</button>
-        <button>CE</button>
-        <button>C</button>
-        <button>del</button>
+    <div id="buttons">
+      <div class="row">
+        <input class="btn" type="button" value="%">
+        <input class="btn" type="button" value="CE">
+        <input class="btn" type="button" value="C">
+        <input class="btn" type="button" value="del">
       </div>
-      <div>
-        <button>1/x</button>
-        <button>x^2</button>
-        <button>x^1/2</button>
-        <button>/</button>
+      <div class="row">
+        <input class="btn" type="button" value="1/x">
+        <input class="btn" type="button" value="x^2">
+        <input class="btn" type="button" value="x^1/2">
+        <input class="btn" type="button" value="/">
       </div>
-      <div>
-        <button>7</button>
-        <button>8</button>
-        <button>9</button>
-        <button>*</button>
+      <div class="row">
+        <input class="btn" type="button" value="7">
+        <input class="btn" type="button" value="8">
+        <input class="btn" type="button" value="9">
+        <input class="btn" type="button" value="*">
       </div>
-      <div>
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
-        <button>-</button>
+      <div class="row">
+        <input class="btn" type="button" value="4">
+        <input class="btn" type="button" value="5">
+        <input class="btn" type="button" value="6">
+        <input class="btn" type="button" value="-">
       </div>
-      <div>
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>+</button>
+      <div class="row">
+        <input class="btn" type="button" value="1">
+        <input class="btn" type="button" value="2">
+        <input class="btn" type="button" value="3">
+        <input class="btn" type="button" value="+">
       </div>
-      <div>
-        <button>+/-</button>
-        <button>0</button>
-        <button>.</button>
-        <button>=</button>
+      <div class="row">
+        <input class="btn" type="button" value="+/-">
+        <input class="btn" type="button" value="0">
+        <input class="btn" type="button" value=".">
+        <input class="btn" type="button" value="=">
       </div>
     </div>
-    <h1>hola mundo</h1>
   </div>
   <script src="script.js"></script>
 </body>
