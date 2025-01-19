@@ -1,17 +1,30 @@
-const entry = document.getElementById('entry')
-const stack = document.getElementById('stack')
+const principalScreen = document.getElementById('entry') //entry
+let principalStack = '' //mainValue
+let principalValue = '' // primaryValue
+const secondaryScreen = document.getElementById('stack') //stack
+let secondaryStack = '' //secondaryValue
+let secondaryValue = '' //lastnumber
 
-let mainValue = '' //string for show
-let lastnumber = ''
-let primaryValue = '' // string for control
-let secondaryValue = '' //string
-let btnValue = '' // value press
 let operator = '' // + *
 let result = 0
 let rebootEntry = false
 let join = false
+let btnValue = '' // value press
 let prevButton = ''
 
+const rebootValues = () => {
+  principalScreen.value = ''
+  principalStack = ''
+  principalValue = ''
+  secondaryScreen.innerHTML = ''
+  secondaryStack = ''
+  secondaryValue = ''
+  
+  operator = ''
+  result = 0
+  rebootEntry = false
+  join = false
+}
 const form = document.querySelector('#buttons')
 const buttons = form.querySelectorAll('input')
 
@@ -26,36 +39,28 @@ buttons.forEach((button) => {
           rebootValues()
         }
         if(rebootEntry == true){
-          mainValue = btnValue //save temp principal 
+          principalStack = btnValue //save temp principal 
           rebootEntry = false
         }else {
-          if(mainValue == '0'){  //if first value is 0
+          if(principalStack == '0'){  //if first value is 0
             rebootEntry = true
-            mainValue = btnValue
+            principalStack = btnValue
           }else{
-            mainValue += btnValue
+            principalStack += btnValue
           }
         }
-        lastnumber = mainValue //save last number from input
-        writePrimary(mainValue) //write main screen
+        secondaryValue = principalStack //save last number from input
+        writePrimary(principalStack) //write main screen
         break;
 
       case '+': case '-': case '*': case '/':
         if(prevButton != btnValue){
-          if(mainValue == ''){
-            mainValue = '0'
-            lastnumber = '0'
-          }
-          operator = btnValue
-          primaryValue = mainValue // update value number one
-          if(join == true){ //come from result
-            lastnumber = mainValue // -was result-
-            secondaryValue = addSecondary(primaryValue,operator,'','')
+          if(join != true){
+            processSymbol(btnValue)
           }else{
-            secondaryValue = addSecondary(mainValue,operator,'','')
+            processSymbol('=')
+            // calcResult()
           }
-          writeSecondary(secondaryValue) //write secondary
-          rebootEntry = true
         }
         break;
 
@@ -67,30 +72,47 @@ buttons.forEach((button) => {
         break;
 
       case '=':
-        if(prevButton == btnValue){
-          secondaryValue = addSecondary(primaryValue,operator,lastnumber,btnValue)
-        }else{
-          secondaryValue = addSecondary(secondaryValue,lastnumber,btnValue,'')
-        }
-        result = eval (`${primaryValue} ${operator} ${lastnumber}`)
-        console.log(`eval: ${primaryValue} ${operator} ${lastnumber} = ${result}`)
-        mainValue = result
-        primaryValue = result
-        writeSecondary(secondaryValue)
-        writePrimary(mainValue)
-        join = true
+        calcResult()
         break;
     }
     prevButton = btnValue
   })
 })
 
-const processSymbol = () => {
+const symbolResult = () => {
 
 }
 
-const calcResult =() => {
+const processSymbol = (buttonVal) => {
+  if(principalStack == ''){
+    principalStack = '0'
+    secondaryValue = '0'
+  }
+  principalValue = principalStack // update value number one
+  operator = btnValue
+  if(join == true){ //come from result
+    secondaryValue = principalStack // -was result-
+    secondaryStack = addSecondary(principalValue,operator,'','')
+  }else{
+    secondaryStack = addSecondary(principalStack,operator,'','')
+  }
+  writeSecondary(secondaryStack) //write secondary
+  rebootEntry = true
+}
 
+const calcResult =() => {
+  if(prevButton == btnValue){
+    secondaryStack = addSecondary(principalValue,operator,secondaryValue,btnValue)
+  }else{
+    secondaryStack = addSecondary(secondaryStack,secondaryValue,btnValue,'')
+  }
+  result = eval (`${principalValue} ${operator} ${secondaryValue}`)
+  console.log(`eval: ${principalValue} ${operator} ${secondaryValue} = ${result}`)
+  principalStack = result
+  principalValue = result
+  writeSecondary(secondaryStack)
+  writePrimary(principalStack)
+  join = true
 }
 
 const addSecondary = (value1, value2, value3, value4) => {
@@ -99,22 +121,10 @@ const addSecondary = (value1, value2, value3, value4) => {
 }
 
 const writeSecondary = (text) => {
-  stack.innerHTML = text
+  secondaryScreen.innerHTML = text
 }
 
 const writePrimary = (text) => {
-  entry.value = text
+  principalScreen.value = text
 }
 
-const rebootValues = () => {
-  entry.value = ''
-  stack.innerHTML = ''
-  mainValue = ''
-  secondaryValue = ''
-  operator = ''
-  primaryValue = ''
-  lastnumber = ''
-  result = 0
-  rebootEntry = false
-  join = false
-}
