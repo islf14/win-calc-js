@@ -19,61 +19,70 @@ buttons.forEach((button) => {
   button.addEventListener('click', (event) => {
     btnValue = event.target.value
     switch(btnValue){
+
       case '0': case '1': case '2': case '3': case '4':
       case '5': case '6': case '7': case '8': case '9':
         if(prevButton == '='){
           rebootValues()
         }
         if(rebootEntry == true){
-          mainValue = btnValue
+          mainValue = btnValue //save temp principal 
           rebootEntry = false
         }else {
           mainValue += btnValue
         }
-        lastnumber = mainValue
-        writePrimary(mainValue) //write mainValue
+        lastnumber = mainValue //save last number from input
+        writePrimary(mainValue) //write main screen
         break;
+
       case '+': case '-': case '*': case '/':
         if(prevButton != btnValue){
-          primaryValue = mainValue // update data
           operator = btnValue
+          if(mainValue == ''){
+            mainValue = '0'
+            lastnumber = '0'
+          }
+          primaryValue = mainValue // update value number one
           if(join == true){
             lastnumber = result
+            secondaryValue = addSecondary(primaryValue,operator,'','')
+          }else{
+            secondaryValue = addSecondary(mainValue,operator,'','')
           }
-          addSecondary()
           writeSecondary(secondaryValue) //write secondary
           rebootEntry = true
         }
         break;
+
       case 'C':
         rebootValues()
         break;
+      case '%':
+        printAllValues
+        break;
+
       case '=':
-        addSecondary()
-        console.log(`eval: ${primaryValue} ${operator} ${lastnumber} = ${result}`)
+        if(prevButton == btnValue){
+          secondaryValue = addSecondary(primaryValue,operator,lastnumber,btnValue)
+        }else{
+          secondaryValue = addSecondary(secondaryValue,lastnumber,btnValue,'')
+        }
         result = eval (`${primaryValue} ${operator} ${lastnumber}`)
-        join = true
+        console.log(`eval: ${primaryValue} ${operator} ${lastnumber} = ${result}`)
         mainValue = result
         primaryValue = result
         writeSecondary(secondaryValue)
         writePrimary(mainValue)
+        join = true
         break;
     }
     prevButton = btnValue
   })
 })
 
-const addSecondary = () => {
-  if(prevButton == btnValue){
-    secondaryValue = primaryValue + operator + lastnumber + btnValue //whe is =
-  } else{
-    if(secondaryValue == '0' || join == true){
-      secondaryValue = mainValue + btnValue // 1. upload number and symbol
-      join = false
-    } else {
-      secondaryValue += mainValue + btnValue //string increment
-    }
-  }
+const addSecondary = (value1, value2, value3, value4) => {
+  const total = value1.toString() + value2.toString() + value3.toString() + value4.toString()
+  return total
 }
 
 const writeSecondary = (text) => {
@@ -88,7 +97,7 @@ const rebootValues = () => {
   entry.value = ''
   stack.innerHTML = ''
   mainValue = ''
-  secondaryValue = '0'
+  secondaryValue = ''
   operator = ''
   primaryValue = ''
   lastnumber = ''
