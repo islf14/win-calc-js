@@ -29,7 +29,12 @@ buttons.forEach((button) => {
           mainValue = btnValue //save temp principal 
           rebootEntry = false
         }else {
-          mainValue += btnValue
+          if(mainValue == '0'){  //if first value is 0
+            rebootEntry = true
+            mainValue = btnValue
+          }else{
+            mainValue += btnValue
+          }
         }
         lastnumber = mainValue //save last number from input
         writePrimary(mainValue) //write main screen
@@ -37,14 +42,14 @@ buttons.forEach((button) => {
 
       case '+': case '-': case '*': case '/':
         if(prevButton != btnValue){
-          operator = btnValue
           if(mainValue == ''){
             mainValue = '0'
             lastnumber = '0'
           }
+          operator = btnValue
           primaryValue = mainValue // update value number one
-          if(join == true){
-            lastnumber = result
+          if(join == true){ //come from result
+            lastnumber = mainValue // -was result-
             secondaryValue = addSecondary(primaryValue,operator,'','')
           }else{
             secondaryValue = addSecondary(mainValue,operator,'','')
@@ -79,6 +84,14 @@ buttons.forEach((button) => {
     prevButton = btnValue
   })
 })
+
+const processSymbol = () => {
+
+}
+
+const calcResult =() => {
+
+}
 
 const addSecondary = (value1, value2, value3, value4) => {
   const total = value1.toString() + value2.toString() + value3.toString() + value4.toString()
