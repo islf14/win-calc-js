@@ -1,29 +1,45 @@
-const principalScreen = document.getElementById('entry') //entry
+const principalFont = document.getElementById('entry') //entry
 let principalStack = '' //mainValue
 let principalValue = '' // primaryValue
-const secondaryScreen = document.getElementById('stack') //stack
+const secondaryFont = document.getElementById('stack') //stack
 let secondaryStack = '' //secondaryValue
 let secondaryValue = '' //lastnumber
 
 let operator = '' // + *
+let operatorSecondary = ''
 let result = 0
 let rebootEntry = false
 let join = false
-let btnValue = '' // value press
 let prevButton = ''
+let btnValue = '' // value press
 
 const rebootValues = () => {
-  principalScreen.value = ''
+  principalFont.value = ''
   principalStack = ''
   principalValue = ''
-  secondaryScreen.innerHTML = ''
+  secondaryFont.innerHTML = ''
   secondaryStack = ''
   secondaryValue = ''
   
   operator = ''
+  operatorSecondary = ''
   result = 0
   rebootEntry = false
   join = false
+  prevButton = ''
+}
+
+const printAllValues = () => {
+  console.log ('-------------------------------------')
+  console.log ('principalStack es: ' + principalStack)
+  console.log ('principalValue es: ' + principalValue)
+  console.log ('secondaryStack es: ' + secondaryStack)
+  console.log ('secondaryValue es: ' + secondaryValue)
+  console.log ('operator es: ' + operator)
+  console.log ('operatorSecondary es: ' + operatorSecondary)
+  console.log ('result es: ' + result)
+  console.log ('prevButton es: ' + prevButton)
+  console.log ('-------------------------------------')
 }
 const form = document.querySelector('#buttons')
 const buttons = form.querySelectorAll('input')
@@ -46,21 +62,19 @@ buttons.forEach((button) => {
             rebootEntry = true
             principalStack = btnValue
           }else{
-            principalStack += btnValue
+            principalStack += btnValue /// when begin is here
           }
         }
-        secondaryValue = principalStack //save last number from input
+        principalValue = principalStack //save last number from input
         writePrimary(principalStack) //write main screen
         break;
 
       case '+': case '-': case '*': case '/':
         if(prevButton != btnValue){
-          if(join != true){
-            processSymbol(btnValue)
-          }else{
-            processSymbol('=')
-            // calcResult()
+          if(operator != ''){
+            calcResult()
           }
+          processSymbol(btnValue)
         }
         break;
 
@@ -68,7 +82,7 @@ buttons.forEach((button) => {
         rebootValues()
         break;
       case '%':
-        printAllValues
+        printAllValues()
         break;
 
       case '=':
@@ -79,39 +93,32 @@ buttons.forEach((button) => {
   })
 })
 
-const symbolResult = () => {
-
-}
-
-const processSymbol = (buttonVal) => {
+const processSymbol = (symbol) => {
   if(principalStack == ''){
     principalStack = '0'
-    secondaryValue = '0'
+    principalValue = '0'
   }
-  principalValue = principalStack // update value number one
-  operator = btnValue
+  secondaryValue = principalStack //number one duplicate code when is = + // would from val
+  operator = symbol
   if(join == true){ //come from result
-    secondaryValue = principalStack // -was result-
-    secondaryStack = addSecondary(principalValue,operator,'','')
-  }else{
-    secondaryStack = addSecondary(principalStack,operator,'','')
+    principalValue = principalStack // -was result-
   }
+  secondaryStack = addSecondary(principalValue,operator,'','')
   writeSecondary(secondaryStack) //write secondary
   rebootEntry = true
 }
 
 const calcResult =() => {
-  if(prevButton == btnValue){
-    secondaryStack = addSecondary(principalValue,operator,secondaryValue,btnValue)
-  }else{
-    secondaryStack = addSecondary(secondaryStack,secondaryValue,btnValue,'')
+  if(prevButton != btnValue){
+    operatorSecondary = operator
   }
-  result = eval (`${principalValue} ${operator} ${secondaryValue}`)
-  console.log(`eval: ${principalValue} ${operator} ${secondaryValue} = ${result}`)
-  principalStack = result
-  principalValue = result
+  secondaryStack = addSecondary(secondaryValue, operatorSecondary, principalValue, btnValue)
   writeSecondary(secondaryStack)
+  result = eval (`${secondaryValue} ${operatorSecondary} ${principalValue}`)
+  principalStack = result
+  secondaryValue = result /// is necesary for double =
   writePrimary(principalStack)
+  operator = ''
   join = true
 }
 
@@ -121,10 +128,9 @@ const addSecondary = (value1, value2, value3, value4) => {
 }
 
 const writeSecondary = (text) => {
-  secondaryScreen.innerHTML = text
+  secondaryFont.innerHTML = text
 }
 
 const writePrimary = (text) => {
-  principalScreen.value = text
+  principalFont.value = text
 }
-
