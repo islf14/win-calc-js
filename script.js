@@ -39,6 +39,8 @@ const printAllValues = () => {
   console.log ('operatorSecondary es: ' + operatorSecondary)
   console.log ('result es: ' + result)
   console.log ('prevButton es: ' + prevButton)
+  console.log ('rebootEntry es: ' + rebootEntry)
+  console.log ('join es: ' + join)
   console.log ('-------------------------------------')
 }
 const form = document.querySelector('#buttons')
@@ -78,9 +80,20 @@ buttons.forEach((button) => {
         }
         break;
 
+      case 'del':
+        if( principalStack != '' ) {
+          if(principalStack.length > 0){
+            principalStack = principalStack.slice(0,-1)
+          }
+          principalValue = principalStack
+          writePrimary(principalStack)
+        }
+        break;
+
       case 'C':
         rebootValues()
         break;
+
       case '%':
         printAllValues()
         break;
@@ -94,30 +107,32 @@ buttons.forEach((button) => {
 })
 
 const processSymbol = (symbol) => {
-  if(principalStack == ''){
-    principalStack = '0'
+  if(principalValue == ''){
     principalValue = '0'
   }
-  secondaryValue = principalStack //number one duplicate code when is = + // would from val
   operator = symbol
   if(join == true){ //come from result
-    principalValue = principalStack // -was result-
+    principalValue = result
+    join = false
   }
+  secondaryValue = principalValue //duplicate value
   secondaryStack = addSecondary(principalValue,operator,'','')
   writeSecondary(secondaryStack) //write secondary
+  principalStack = ''
+  operatorSecondary = ''
   rebootEntry = true
 }
 
 const calcResult =() => {
+  principalStack = ''
   if(prevButton != btnValue){
     operatorSecondary = operator
   }
   secondaryStack = addSecondary(secondaryValue, operatorSecondary, principalValue, btnValue)
   writeSecondary(secondaryStack)
   result = eval (`${secondaryValue} ${operatorSecondary} ${principalValue}`)
-  principalStack = result
   secondaryValue = result /// is necesary for double =
-  writePrimary(principalStack)
+  writePrimary(result)
   operator = ''
   join = true
 }
