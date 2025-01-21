@@ -1,6 +1,6 @@
 const principalFont = document.getElementById('entry') //entry
 let principalStack = '' //mainValue
-let principalValue = '' // primaryValue
+let principalValue = 0 // primaryValue
 const secondaryFont = document.getElementById('stack') //stack
 let secondaryStack = '' //secondaryValue
 let secondaryValue = '' //lastnumber
@@ -8,7 +8,7 @@ let secondaryValue = '' //lastnumber
 let operator = '' // + *
 let operatorSecondary = ''
 let result = 0
-let rebootEntry = false
+let rebootEntry = true
 let join = false
 let prevButton = ''
 let btnValue = '' // value press
@@ -16,7 +16,7 @@ let btnValue = '' // value press
 const rebootValues = () => {
   principalFont.value = ''
   principalStack = ''
-  principalValue = ''
+  principalValue = 0
   secondaryFont.innerHTML = ''
   secondaryStack = ''
   secondaryValue = ''
@@ -24,7 +24,7 @@ const rebootValues = () => {
   operator = ''
   operatorSecondary = ''
   result = 0
-  rebootEntry = false
+  rebootEntry = true
   join = false
   prevButton = ''
 }
@@ -56,19 +56,16 @@ buttons.forEach((button) => {
         if(prevButton == '='){
           rebootValues()
         }
-        if(rebootEntry == true){
-          principalStack = btnValue //save temp principal 
-          rebootEntry = false
-        }else {
-          if(principalStack == '0'){  //if first value is 0
-            rebootEntry = true
-            principalStack = btnValue
-          }else{
-            principalStack += btnValue /// when begin is here
+        if(rebootEntry == true || principalStack == '' || principalStack  == '0'){
+          if(btnValue != '0'){
+            rebootEntry = false
           }
+          principalStack = btnValue /// when begin is here
+        }else {
+          principalStack += btnValue
         }
         principalValue = principalStack //save last number from input
-        writePrimary(principalStack) //write main screen
+        writePrimary(principalStack)
         break;
 
       case '+': case '-': case '*': case '/':
@@ -81,13 +78,14 @@ buttons.forEach((button) => {
         break;
 
       case 'del':
-        if( principalStack != '' ) {
           if(principalStack.length > 0){
             principalStack = principalStack.slice(0,-1)
+            principalValue = principalStack
+            writePrimary(principalStack)
+          }else{
+            principalValue = 0
+            rebootEntry = true
           }
-          principalValue = principalStack
-          writePrimary(principalStack)
-        }
         break;
 
       case 'C':
@@ -107,9 +105,6 @@ buttons.forEach((button) => {
 })
 
 const processSymbol = (symbol) => {
-  if(principalValue == ''){
-    principalValue = '0'
-  }
   operator = symbol
   if(join == true){ //come from result
     principalValue = result
@@ -117,7 +112,7 @@ const processSymbol = (symbol) => {
   }
   secondaryValue = principalValue //duplicate value
   secondaryStack = addSecondary(principalValue,operator,'','')
-  writeSecondary(secondaryStack) //write secondary
+  writeSecondary(secondaryStack)
   principalStack = ''
   operatorSecondary = ''
   rebootEntry = true
@@ -125,13 +120,19 @@ const processSymbol = (symbol) => {
 
 const calcResult =() => {
   principalStack = ''
+  console.log('principal value is: ' + principalValue)
   if(prevButton != btnValue){
     operatorSecondary = operator
   }
-  secondaryStack = addSecondary(secondaryValue, operatorSecondary, principalValue, btnValue)
+  if(operatorSecondary != ''){
+    secondaryStack = addSecondary(secondaryValue, operatorSecondary, principalValue, btnValue)
+    result = eval (`${secondaryValue} ${operatorSecondary} ${principalValue}`)
+    secondaryValue = result /// is necesary for double =
+  }else{
+    secondaryStack = addSecondary(principalValue,btnValue,'','')
+    result = principalValue
+  }
   writeSecondary(secondaryStack)
-  result = eval (`${secondaryValue} ${operatorSecondary} ${principalValue}`)
-  secondaryValue = result /// is necesary for double =
   writePrimary(result)
   operator = ''
   join = true
